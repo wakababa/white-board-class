@@ -9,3 +9,11 @@ export function createUUID() {
     s[8] = s[13] = s[18] = s[23] = "-";
     return s.join("");
 }
+
+export function getMousePosition(canvas, evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        clientX: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
+        clientY: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+    };
+}
