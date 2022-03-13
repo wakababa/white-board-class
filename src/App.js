@@ -1,23 +1,18 @@
 import logo from './logo.svg';
 import './App.css';
+import {useEffect} from "react";
+import Whiteboard from "./Whiteboard";
 
 function App() {
+    const whiteboard =   new Whiteboard()
+    useEffect(()=>{
+        whiteboard.init()
+    },[])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <button onClick={()=>whiteboard.createShape("Rectangle",20,20,100,50)}>Text</button>
+        <button onClick={()=>whiteboard.moveShape(100,20,100,100,50)}>Move</button>
+        <button onClick={()=>whiteboard.resize(100,50,200)}>Resize</button>
     </div>
   );
 }
