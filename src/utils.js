@@ -17,3 +17,37 @@ export function getMousePosition(canvas, evt) {
         clientY: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
     };
 }
+const nearPoint = (x, y, x1, y1, name) => {
+    return Math.abs(x - x1) < 5 && Math.abs(y - y1) < 5 ? name : null;
+};
+const distance = (a, b) =>
+    Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+
+const positionWithinElement = (x, y, element) => {
+    const { type, x1, x2, y1, y2 } = element;
+    if (type === "rectangle") {
+        const topLeft = nearPoint(x, y, x1, y1, "tl");
+        const topRight = nearPoint(x, y, x2, y1, "tr");
+        const bottomLeft = nearPoint(x, y, x1, y2, "bl");
+        const bottomRight = nearPoint(x, y, x2, y2, "br");
+        const inside = x >= x1 && x <= x2 && y >= y1 && y <= y2 ? "inside" : null;
+        return topLeft || inside || topRight || bottomLeft || bottomRight;
+    } else {
+        const a = { x: x1, y: y1 };
+        const b = { x: x2, y: y2 };
+        const c = { x, y };
+        const offset = distance(a, b) - (distance(a, c) + distance(b, c));
+        const start = nearPoint(x, y, x1, y1, "start");
+        const end = nearPoint(x, y, x2, y2, "end");
+        const inside = Math.abs(offset) < 1 ? "inside" : null;
+        return start || end || inside;
+    }
+};
+export function getElementAtPosition(x, y, elements){
+    return elements
+        .map((ele) => ({
+            ...ele,
+            position: positionWithinElement(x, y, ele),
+        }))
+        .find((ele) => ele.position !== null);
+};
