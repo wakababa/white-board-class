@@ -17,7 +17,7 @@ class Whiteboard {
         this.elements = []
         this.drawing = false
         this.move = false
-        this.tool = RECTANGLE
+        this.toolType = RECTANGLE
         this.background = "#e3e3e3"
         this.strokeStyle = "#be1717"
         this.fillStyle = "#be1717"
@@ -27,12 +27,11 @@ class Whiteboard {
 
     init() {this.createCanvas()}
 
-    setTool(tool){
-        this.tool = tool
+    setToolType(toolType){
+        this.toolType = toolType
     }
-
     mouseDown(e, canvas) {
-      if(this.tool === RECTANGLE){
+      if(this.toolType === RECTANGLE){
           this.drawing = true
           const {clientX, clientY} = getMousePosition(canvas, e)
           this.points = {
@@ -45,7 +44,7 @@ class Whiteboard {
 
           this.createShape(RECTANGLE, x1, y1, 0, 0,this.strokeStyle)
       }
-      if(this.tool === SELECT){
+      if(this.toolType === SELECT){
           this.move = true
           const {clientX, clientY} = getMousePosition(canvas, e)
           let element =  getElementAtPosition(clientX,clientY,this.elements)
@@ -55,7 +54,7 @@ class Whiteboard {
 
     mouseMove(e, canvas) {
 
-        if(this.drawing && this.tool === RECTANGLE){
+        if(this.drawing && this.toolType === RECTANGLE){
             const {clientX, clientY} = getMousePosition(canvas, e)
             this.points = {
                 ...this.points,
@@ -66,7 +65,7 @@ class Whiteboard {
             this.updateShape(this.elements[this.elements.length - 1].id, x1, y1, x2, y2)
         }
 
-        if(this.move && this.tool === SELECT  && this.selectedElement){
+        if(this.move && this.toolType === SELECT  && this.selectedElement){
                 const {clientX, clientY} = getMousePosition(canvas, e)
                 this.points = {
                     x1: clientX ,
@@ -80,7 +79,7 @@ class Whiteboard {
     }
 
     mouseUp(e, canvas) {
-        if(this.tool === RECTANGLE){
+        if(this.toolType === RECTANGLE){
             const {clientX, clientY} = getMousePosition(canvas, e)
             this.points = {
                 ...this.points,
@@ -91,9 +90,8 @@ class Whiteboard {
             this.updateShape(this.elements[this.elements.length - 1].id, x1, y1, x2, y2)
             this.drawing = false
             this.points = initialPoints
-
         }
-        if(this.tool === SELECT  && this.selectedElement){
+        if(this.toolType === SELECT  && this.selectedElement){
             const {clientX, clientY} = getMousePosition(canvas, e)
             this.points = {
                 x1: clientX ,
