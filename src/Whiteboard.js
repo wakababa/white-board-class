@@ -1,6 +1,6 @@
 import {createUUID, getElementAtPosition, getMousePosition} from "./utils";
 import Rectangle from "./shapes/Rectangle";
-import {DRAW, RECTANGLE, SELECT} from "./constants";
+import {DRAW, RECTANGLE, SELECT, UNDO} from "./constants";
 import Toolbar from "./Toolbar";
 
 const initialPoints = {
@@ -127,23 +127,26 @@ class Whiteboard {
         const buttons = [
             {
                 name:RECTANGLE,
-                className:"fal fa-vector-square"
+                className:"fal fa-vector-square",
+                fnc:(toolType)=>this.setToolType(toolType)
             },
             {
                 name:SELECT,
-                className:"fal fa-layer-group"
+                className:"fal fa-layer-group",
+                fnc:(toolType)=>this.setToolType(toolType)
             },
-
-
+            {
+                name:UNDO,
+                className:"fas fa-undo",
+                fnc:()=>this.undo()
+            },
         ]
         buttons.forEach(btn=>{
             const button = document.createElement('button')
             button.id = "button-" + btn.name
             button.innerHTML  = btn.name
             button.style.margin="5px"
-            button.addEventListener('click', (e) => {
-                this.setToolType(btn.name)
-            }, false);
+            button.addEventListener('click', (e) => btn.fnc(btn.name), false);
             const Toolbar = document.getElementsByClassName("toolbar")[0]
             Toolbar.appendChild(button)
         })
