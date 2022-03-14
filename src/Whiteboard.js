@@ -2,7 +2,19 @@ import {createUUID, getElementAtPosition, getMousePosition} from "./utils";
 import Rectangle from "./shapes/Rectangle";
 import {DRAW, RECTANGLE, SELECT, UNDO} from "./constants";
 import Toolbar from "./Toolbar";
+function removeDuplicates(originalArray, prop) {
+    const newArray = [];
+    const lookupObject  = {};
 
+    for(let i in originalArray) {
+        lookupObject[originalArray[i][prop]] = originalArray[i];
+    }
+
+    for(let i in lookupObject) {
+        newArray.push(lookupObject[i]);
+    }
+    return newArray;
+}
 const initialPoints = {
     x1: null,
     y1: null,
@@ -15,6 +27,7 @@ class Whiteboard {
         this.canvas = null
         this.context = null
         this.elements = []
+        this.history= []
         this.drawing = false
         this.move = false
         this.toolType = RECTANGLE
@@ -100,7 +113,8 @@ class Whiteboard {
                 y2:this.selectedElement.y2,
             }
             const {x1, y1, x2, y2} = this.points
-            this.updateShape(this.selectedElement.id, x1, y1, x2, y2)
+             this.updateShape(this.selectedElement.id, x1, y1, x2, y2,"drop")
+            const date = new Date()
             this.move = false
             this.points = initialPoints
         }
@@ -153,7 +167,9 @@ class Whiteboard {
     }
     createShape(type, x1, y1, x2, y2,strokeStyle) {
         const id = createUUID()
-        this.elements = [...this.elements, {id, type, x1, y1, x2, y2,strokeStyle}]
+        const date = new Date()
+        this.elements = [...this.elements, {id, type, x1, y1, x2, y2,strokeStyle,date}]
+        this.history = [...this.history,[...this.elements, {id, type, x1, y1, x2, y2,strokeStyle,date}]]
         this.renderShapes()
     }
 
@@ -167,7 +183,7 @@ class Whiteboard {
         })
     }
 
-    updateShape(id, x1, y1, x2, y2) {
+    updateShape(id, x1, y1, x2, y2,type) {
         const copyElements = this.elements
         const index = copyElements.findIndex(cop => cop.id === id)
         copyElements[index] = {
@@ -177,7 +193,24 @@ class Whiteboard {
             x2,
             y2
         }
+        if(type === "drop"){
+            this.history = [...this.history,[...this.elements, copyElements]]
+        }
         this.renderShapes()
+    }
+
+    undo(){
+        console.log("history",this.history)
+        console.log("elements",this.elements)
+
+        if(this.history.length > 0){
+            const deletedElements = this.history.slice(0,-1)
+            // const lastItem = this.elements[this.elements.length -1]
+            this.elements = deletedElements[deletedElements.length -1] ?? []
+            this.history =deletedElements
+            this.renderShapes()
+        }
+
     }
 
 }
