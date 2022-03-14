@@ -1,6 +1,7 @@
 import {createUUID, getElementAtPosition, getMousePosition} from "./utils";
 import Rectangle from "./shapes/Rectangle";
 import {DRAW, RECTANGLE, SELECT} from "./constants";
+import Toolbar from "./Toolbar";
 
 const initialPoints = {
     x1: null,
@@ -8,7 +9,6 @@ const initialPoints = {
     x2: null,
     y2: null,
 }
-
 class Whiteboard {
 
     constructor() {
@@ -120,8 +120,34 @@ class Whiteboard {
         canvas.addEventListener('mousedown', (e) => this.mouseDown(e, canvas), false);
         canvas.addEventListener('mousemove', (e) => this.mouseMove(e, canvas), false);
         canvas.addEventListener('mouseup', (e) => this.mouseUp(e, canvas), false);
+        this.createToolbar()
     }
 
+    createToolbar(){
+        const buttons = [
+            {
+                name:RECTANGLE,
+                className:"fal fa-vector-square"
+            },
+            {
+                name:SELECT,
+                className:"fal fa-layer-group"
+            },
+
+
+        ]
+        buttons.forEach(btn=>{
+            const button = document.createElement('button')
+            button.id = "button-" + btn.name
+            button.innerHTML  = btn.name
+            button.style.margin="5px"
+            button.addEventListener('click', (e) => {
+                this.setToolType(btn.name)
+            }, false);
+            const Toolbar = document.getElementsByClassName("toolbar")[0]
+            Toolbar.appendChild(button)
+        })
+    }
     createShape(type, x1, y1, x2, y2,strokeStyle) {
         const id = createUUID()
         this.elements = [...this.elements, {id, type, x1, y1, x2, y2,strokeStyle}]

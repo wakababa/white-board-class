@@ -1,5 +1,5 @@
-const SELECT = "select"
-const DRAW = "draw"
+const SELECT = "Select"
+const DRAW = "Draw"
 const RECTANGLE = "Rectangle"
 
 

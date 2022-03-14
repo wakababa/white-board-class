@@ -14,11 +14,7 @@ function App() {
 
   return (
     <div className="App">
-        <div>
-            <button  onClick={()=>{whiteboard.setToolType(SELECT)}}><BiSelection /></button>
-            <button onClick={()=>{whiteboard.setToolType(RECTANGLE)}}><BiRectangle /></button>
-        </div>
-        <button onClick={()=>whiteboard.createShape("Rectangle",20,20,100,50,"#102bc9")}>Demo Rectangle</button>
+    <div className={"toolbar"} style={{display:"flex",flexDirection:"column",backgroundColor:"#FFF",position:"absolute",top:"30%",left:10,padding:10}}></div>
     </div>
   );
 }
